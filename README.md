@@ -135,7 +135,10 @@ In the example above, user1 has only 1 key, user2 has 3 keys and user3 has 2 key
 ### Create an API Key
 You will now need an API key from Yubico, to get one go to: https://upgrade.yubico.com/getapikey/ and follow the prompts to get an ID and secret.
 
-Edit `/etc/pam.d/sshd` to add a PAM authorization, and add `auth required pam_yubico.so id=client_id key=secret_key authfile=/etc/ssh/authorized_yubikeys` to the top of the file (replacing `client_id` and `client_secret` with the ID and secret you created earlier.
+Edit `/etc/pam.d/sshd` to add a PAM authorization, and add the following line to the top of the file (replacing `client_id` and `client_secret` with the ID and secret you created earlier.
+
+`auth required pam_yubico.so id=client_id key=secret_key authfile=/etc/ssh/authorized_yubikeys` 
+
 
 `nano /etc/pam.d/sshd`
 
