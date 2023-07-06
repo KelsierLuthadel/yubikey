@@ -22,7 +22,7 @@ This module implements PAM over U2F and FIDO2, providing an easy way to integrat
 
 ## Integrate U2F Key(s) with your account
 Open a terminal
-run `mkdir -p ~/.config/Yubico
+run `mkdir -p ~/.config/Yubico`
 Insert a U2F key
 run `pamu2fcfg > ~/.config/Yubico/u2f_keys`
   You may be prompted to enter a PIN, if so, this is your YubiKey's FIDO2 PIN.
