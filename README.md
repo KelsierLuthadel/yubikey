@@ -111,6 +111,13 @@ This will write two files into `~/.ssh/` called `id_ecdsa_sk_rk` and `id_ecdsa_s
 The public key can be uploaded to GitHub / GitLab, so that when you perform a git action over ssh you will be prompted to touch the YubiKey.
 
 ## Protecting an ssh server
+SSH Login to an external server can be protected using the public key used in the previous step:
+
+run `ssh-copy-id -i ~/.ssh/id_ecdsa_sk_rk.pub user@server`
+
+You will be prompted to enter the password for the server, and once done you will be able to ssh to that server using the YubiKey in the future. What this allows you to do is set a really complex password for the server or not allow password login.
+
+## Protecting an ssh server using Yubi Cloud
 On the server you will need to install `libpam-yubico`
 
 run: `sudo apt-get install libpam-yubico`
