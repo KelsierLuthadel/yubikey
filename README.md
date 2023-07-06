@@ -110,11 +110,56 @@ This will write two files into `~/.ssh/` called `id_ecdsa_sk_rk` and `id_ecdsa_s
 
 The public key can be uploaded to GitHub / GitLab, so that when you perform a git action over ssh you will be prompted to touch the YubiKey.
 
-### Protecting an ssh server
-SSH Login to an external server can be protected using the public key used in the previous step:
+## Protecting an ssh server
+On the server you will need to install `libpam-yubico`
 
-run `ssh-copy-id -i ~/.ssh/id_ecdsa_sk_rk.pub user@server`
+run: `sudo apt-get install libpam-yubico`
 
-You will be prompted to enter the password for the server, and once done you will be able to ssh to that server using the YubiKey in the future. What this allows you to do is set a really complex password for the server or not allow password login.
+### Save Key IDs for users
+Now create a file that will contain the YubiKey IDs
+
+`touch /etc/ssh/authorized_yubikeys`
+
+For each user on the system that will be protected with a YubiKey, you will add the first 12 characters of the key. You can get the ID by opening a text editor and touching the button on the YubiKey, and selecting the first 12 characters.
+
+`sudo nano /etc/ssh/authorized_yubikeys`
+
+```
+user1:aahuseafandz
+user2:ahgybnjiijha:protocbhgtya:duckfghuythr
+user3:fnyynyhjklea:gnhghtyewsda
+```
+
+In the example above, user1 has only 1 key, user2 has 3 keys and user3 has 2 keys.
+
+### Create an API Key
+You will now need an API key from Yubico, to get one go to: https://upgrade.yubico.com/getapikey/ and follow the prompts to get an ID and secret.
+
+Edit `/etc/pam.d/sshd` to add a PAM authorization, and add `auth required pam_yubico.so id=client_id key=secret_key authfile=/etc/ssh/authorized_yubikeys` to the top of the file (replacing `client_id` and `client_secret` with the ID and secret you created earlier.
+
+`nano /etc/pam.d/sshd`
+
+```
+# PAM configuration for the Secure Shell service
+
+auth required pam_yubico.so id=client id key=secret key authfile=/etc/ssh/authorized_yubikeys
+
+# Standard Un*x authentication.
+@include common-auth
+```
+
+### Updating sshd
+Edit `/etc/ssh/sshd_config` and ensure the following lines exist
+
+```
+ChallengeResponseAuthentication yes
+UsePAM yes
+```
+
+Restart the ssh daemon to allow secure login
+
+`sudo systemctl restart sshd`
+
+
 
 
